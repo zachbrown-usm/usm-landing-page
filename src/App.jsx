@@ -1,4 +1,5 @@
 import CtaLink from "./components/CtaLink";
+import CalendlyEmbed from "./components/CalendlyEmbed";
 import {
   ctaConfig,
   hasExternalBookingUrl,
@@ -196,6 +197,11 @@ function App() {
   const secondaryPainCards = painCards.filter((item) => !item.featured);
   const primaryBookingHref = ctaConfig.primaryBookingUrl;
   const secondaryCtaHref = ctaConfig.secondaryCtaUrl;
+  const embeddedBookingUrl =
+    ctaConfig.ghlCalendarUrl ||
+    ctaConfig.ghlFormUrl ||
+    (hasExternalBookingUrl ? ctaConfig.primaryBookingUrl : "");
+  const isCalendlyEmbed = embeddedBookingUrl.includes("calendly.com");
 
   return (
     <div className="overflow-x-clip bg-[var(--bg)] text-[var(--text)] selection:bg-[var(--accent)]/30 selection:text-white">
@@ -370,60 +376,51 @@ function App() {
 
                 <div
                   id="fit-call"
-                  className="mt-5 grid gap-4 rounded-[1.9rem] border border-white/10 bg-[rgba(4,7,10,0.28)] p-6"
+                  className="mt-5 grid gap-5 rounded-[1.9rem] border border-white/10 bg-[rgba(4,7,10,0.28)] p-6"
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--accent-soft)]">
-                        GoHighLevel Integration
+                        Book a Fit Call
                       </p>
                       <p className="mt-3 text-lg font-medium text-white">
-                        The next step is a short fit call to review market,
-                        service area, and response fit. Set your GoHighLevel
-                        calendar or form URL in the CTA config to make this live.
+                        Use the calendar below to book a short fit call and
+                        review market, service area, and offer fit.
                       </p>
                     </div>
                     <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/70">
-                      GHL-ready section
+                      Live booking area
                     </span>
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="input-shell">
-                      Primary booking URL
-                      <span className="mt-1 block text-sm text-white/72">
-                        {ctaConfig.primaryBookingUrl}
-                      </span>
+                  {embeddedBookingUrl ? (
+                    <div className="calendar-embed-shell">
+                      {isCalendlyEmbed ? (
+                        <CalendlyEmbed url={embeddedBookingUrl} />
+                      ) : (
+                        <iframe
+                          src={embeddedBookingUrl}
+                          title="Book a fit call"
+                          className="calendar-embed-frame"
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                        />
+                      )}
                     </div>
-                    <div className="input-shell">
-                      Thank-you page URL
-                      <span className="mt-1 block text-sm text-white/72">
-                        {ctaConfig.thankYouPageUrl}
-                      </span>
+                  ) : (
+                    <div className="calendar-fallback">
+                      <p className="text-base leading-7 text-white/82">
+                        Add your GoHighLevel calendar URL to
+                        `VITE_GHL_CALENDAR_URL` or `VITE_PRIMARY_BOOKING_URL`
+                        to show the embedded booking experience here.
+                      </p>
+                      <CtaLink
+                        href={primaryBookingHref}
+                        className="mt-4 w-full sm:w-auto"
+                      >
+                        Book a Fit Call
+                      </CtaLink>
                     </div>
-                  </div>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    <CtaLink
-                      href={primaryBookingHref}
-                      className="w-full sm:w-auto"
-                    >
-                      Book a Fit Call
-                    </CtaLink>
-                    {hasGhlCalendar ? (
-                      <CtaLink href={ctaConfig.ghlCalendarUrl} variant="secondary">
-                        Open GHL Calendar
-                      </CtaLink>
-                    ) : null}
-                    {hasGhlForm ? (
-                      <CtaLink href={ctaConfig.ghlFormUrl} variant="secondary">
-                        Open GHL Form
-                      </CtaLink>
-                    ) : null}
-                  </div>
-                  <p className="text-sm text-white/72">
-                    {hasExternalBookingUrl
-                      ? "Primary CTAs now link to your configured booking destination."
-                      : "Primary CTAs currently scroll to this section until a production booking URL is added."}
-                  </p>
+                  )}
                 </div>
               </div>
             </div>

@@ -383,6 +383,51 @@ input {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.integration-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1rem 1.1rem;
+}
+
+.integration-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+
+.integration-value {
+  margin-top: 0.45rem;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: white;
+}
+
+.calendar-embed-shell {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 42rem;
+}
+
+.calendar-embed-frame {
+  display: block;
+  width: 100%;
+  min-height: 42rem;
+  border: 0;
+  background: white;
+}
+
+.calendar-fallback {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.4rem;
+}
+
 .list-row {
   display: flex;
   align-items: center;
@@ -666,6 +711,11 @@ input {
   .checklist-shell,
   .final-cta-shell {
     padding: 1.4rem;
+  }
+
+  .calendar-embed-shell,
+  .calendar-embed-frame {
+    min-height: 36rem;
   }
 
   main {
