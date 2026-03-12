@@ -329,6 +329,18 @@ input {
   padding: 1rem 1.05rem;
 }
 
+.proof-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex: none;
+  border-radius: 999px;
+  background: rgba(176, 111, 58, 0.14);
+  color: var(--accent-soft);
+}
+
 .feed-dot {
   margin-top: 0.5rem;
   height: 0.5rem;
@@ -464,6 +476,12 @@ input {
   flex: none;
 }
 
+.list-icon svg,
+.icon-chip svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
 .list-icon-positive {
   background: rgba(34, 197, 94, 0.16);
   color: var(--green-soft);
@@ -525,6 +543,7 @@ input {
   justify-content: center;
   border-radius: 1rem;
   background: rgba(176, 111, 58, 0.12);
+  color: var(--accent-deep);
 }
 
 .step-badge {

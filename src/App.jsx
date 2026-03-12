@@ -127,6 +127,47 @@ const proofExamples = [
   },
 ];
 
+function ProofSignalIcon({ type }) {
+  const commonProps = {
+    className: "h-4 w-4",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.9",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": "true",
+  };
+
+  if (type === "project") {
+    return (
+      <svg {...commonProps}>
+        <path d="M3 10.5 12 3l9 7.5" />
+        <path d="M5.5 9.5V20h13V9.5" />
+        <path d="M9.5 20v-5h5v5" />
+      </svg>
+    );
+  }
+
+  if (type === "call") {
+    return (
+      <svg {...commonProps}>
+        <path d="M8 3h8" />
+        <path d="M7 5h10a2 2 0 0 1 2 2v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V7a2 2 0 0 1 2-2Z" />
+        <path d="M8.5 10.5h7" />
+        <path d="M8.5 14h4.5" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...commonProps}>
+      <path d="M12 3 4 7v5c0 5 3.4 8 8 9 4.6-1 8-4 8-9V7l-8-4Z" />
+      <path d="m9.5 12 1.7 1.7 3.3-3.7" />
+    </svg>
+  );
+}
+
 const processSteps = [
   {
     title: "Book a fit call",
@@ -153,6 +194,91 @@ const bestFitBullets = [
   "You can respond to new leads quickly",
   "You care about fit and project quality more than cheap volume",
 ];
+
+function ListSignalIcon({ type }) {
+  const commonProps = {
+    className: "h-4 w-4",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.9",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": "true",
+  };
+
+  if (type === "fit") {
+    return (
+      <svg {...commonProps}>
+        <path d="M12 3 4 7v5c0 5 3.4 8 8 9 4.6-1 8-4 8-9V7l-8-4Z" />
+        <path d="m9.5 12 1.7 1.7 3.3-3.7" />
+      </svg>
+    );
+  }
+
+  if (type === "not-fit") {
+    return (
+      <svg {...commonProps}>
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8.5 8.5 7 7" />
+        <path d="m15.5 8.5-7 7" />
+      </svg>
+    );
+  }
+
+  if (type === "campaign") {
+    return (
+      <svg {...commonProps}>
+        <path d="M4 12h4l4 8 4-16 4 8h-4" />
+      </svg>
+    );
+  }
+
+  if (type === "message") {
+    return (
+      <svg {...commonProps}>
+        <path d="M5 6h14v9H9l-4 4V6Z" />
+      </svg>
+    );
+  }
+
+  if (type === "creative") {
+    return (
+      <svg {...commonProps}>
+        <path d="M12 3v18" />
+        <path d="M3 12h18" />
+        <path d="M5 5h14v14H5Z" />
+      </svg>
+    );
+  }
+
+  if (type === "lead") {
+    return (
+      <svg {...commonProps}>
+        <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+        <path d="M5 20a7 7 0 0 1 14 0" />
+      </svg>
+    );
+  }
+
+  if (type === "optimize") {
+    return (
+      <svg {...commonProps}>
+        <path d="M4 14h4v6H4z" />
+        <path d="M10 10h4v10h-4z" />
+        <path d="M16 5h4v15h-4z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...commonProps}>
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </svg>
+  );
+}
 
 const faqs = [
   {
@@ -190,6 +316,15 @@ const faqs = [
     answer:
       "The main factors are whether you do legitimate log home restoration work, whether you can respond quickly to inbound demand, whether your market is viable, and whether you want qualified premium opportunities rather than cheap volume.",
   },
+];
+
+const offerIconTypes = [
+  "campaign",
+  "message",
+  "creative",
+  "lead",
+  "optimize",
+  "reporting",
 ];
 
 function App() {
@@ -339,12 +474,27 @@ function App() {
 
                     <div className="mt-10 space-y-4">
                       {[
-                        "Latest inbound lead: 4,800 sq. ft. log home requesting blasting, repair, and exterior stain.",
-                        "Booked call signal: homeowner submitted photos, timing, and service need before the estimate call.",
+                        {
+                          icon: "project",
+                          text: "Latest inbound lead: 4,800 sq. ft. log home requesting blasting, repair, and exterior stain.",
+                        },
+                        {
+                          icon: "call",
+                          text: "Booked call signal: homeowner submitted photos, timing, and service need before the estimate call.",
+                        },
+                        {
+                          icon: "fit",
+                          text: "Project fit: premium property owner looking for a restoration specialist, not a general painter.",
+                        },
                       ].map((item) => (
-                        <div key={item} className="proof-feed-row proof-feed-row-hero">
-                          <span className="feed-dot" />
-                          <span>{item}</span>
+                        <div
+                          key={item.text}
+                          className="proof-feed-row proof-feed-row-hero"
+                        >
+                          <span className="proof-icon">
+                            <ProofSignalIcon type={item.icon} />
+                          </span>
+                          <span>{item.text}</span>
                         </div>
                       ))}
                     </div>
@@ -448,7 +598,9 @@ function App() {
                 <div className="mt-7 space-y-4">
                   {fitItems.map((item) => (
                     <div key={item} className="list-row list-row-strong">
-                      <span className="list-icon list-icon-positive">+</span>
+                      <span className="list-icon list-icon-positive">
+                        <ListSignalIcon type="fit" />
+                      </span>
                       <span className="text-base font-medium text-white">
                         {item}
                       </span>
@@ -464,7 +616,9 @@ function App() {
                 <div className="mt-7 space-y-4">
                   {notFitItems.map((item) => (
                     <div key={item} className="list-row list-row-muted">
-                      <span className="list-icon list-icon-negative">-</span>
+                      <span className="list-icon list-icon-negative">
+                        <ListSignalIcon type="not-fit" />
+                      </span>
                       <span className="text-base font-medium text-white">
                         {item}
                       </span>
@@ -557,10 +711,10 @@ function App() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {offerItems.map((item) => (
+              {offerItems.map((item, index) => (
                 <article key={item} className="panel-light feature-card-strong">
                   <div className="icon-chip" aria-hidden="true">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
+                    <ListSignalIcon type={offerIconTypes[index]} />
                   </div>
                   <p className="mt-5 text-lg font-semibold leading-7 text-[var(--text-strong)]">
                     {item}
@@ -722,7 +876,9 @@ function App() {
                 <div className="space-y-4">
                   {bestFitBullets.map((item) => (
                     <div key={item} className="list-row list-row-strong">
-                      <span className="list-icon list-icon-positive">+</span>
+                      <span className="list-icon list-icon-positive">
+                        <ListSignalIcon type="fit" />
+                      </span>
                       <span className="text-base font-medium text-white">
                         {item}
                       </span>
