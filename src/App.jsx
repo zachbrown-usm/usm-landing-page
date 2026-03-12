@@ -1,505 +1,830 @@
-import { useState } from "react";
-import logoImage from "./assets/Bitterroot Floors and More Logo (500 x 250 px) (1).png";
-import warehouseImage from "./assets/Untitled design (31).png";
-import beforeAfterImage from "./assets/Before and After 1.png";
+import CtaLink from "./components/CtaLink";
+import {
+  ctaConfig,
+  hasExternalBookingUrl,
+  hasGhlCalendar,
+  hasGhlForm,
+} from "./config/cta";
 
-const trustBadges = [
-  "5-Star Google Rating",
-  "0% Interest for 36 Months",
-  "30+ Years Serving the Valley",
+const navItems = [
+  { label: "The System", href: "#why-usm" },
+  { label: "Proof", href: "#proof" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "FAQ", href: "#faq" },
 ];
 
-const painPoints = [
-  "Hidden installation costs that show up late in the process",
-  "Confusing material choices with no expert guidance",
-  "Wasted weekends driving from store to store",
+const fitItems = [
+  "Established log home restoration companies",
+  "Log home staining and refinishing specialists",
+  "Chinking, sealing, and preservation crews",
+  "Operators who want premium rural and exurban projects",
+  "Companies that can respond quickly to serious inbound leads",
 ];
 
-const features = [
+const notFitItems = [
+  "Handymen or general exterior repair crews",
+  "Generic painters chasing low-ticket work",
+  "Low-bid contractors competing on price alone",
+  "Companies looking for shared leads",
+  "Businesses that cannot keep up with inbound demand",
+];
+
+const painCards = [
   {
-    icon: "DIAMOND",
-    title: "Curated Premium Selection",
-    description: "Hardwood, LVP, laminate, and tile chosen for beauty, durability, and long-term value.",
+    title: "Inconsistent premium project flow",
+    body: "High-ticket restoration jobs arrive in bursts, which creates schedule gaps and revenue swings.",
+    featured: true,
   },
   {
-    icon: "PHONE",
-    title: "Advanced Room Visualizer",
-    description: "Preview flooring styles in your space before you commit so decisions feel clear and confident.",
+    title: "Referrals are not a system",
+    body: "Good referrals help, but they rarely create dependable demand across the season.",
   },
   {
-    icon: "BADGE",
-    title: "Certified Master Installers",
-    description: "Professional crews deliver precise installs, clean finishes, and a polished project from start to finish.",
+    title: "Generic contractor marketing misses the niche",
+    body: "Log home owners look for specialists, not broad exterior service companies.",
   },
   {
-    icon: "PAW",
-    title: "Pet & Kid-Friendly Options",
-    description: "Waterproof and scratch-resistant options built for busy households and messy real life.",
+    title: "Lower-value work drifts into the pipeline",
+    body: "When the calendar softens, it gets easier to take jobs that dilute premium positioning.",
   },
 ];
 
-const categories = ["Hardwood", "LVP", "Tile"];
+const offerItems = [
+  "Meta campaigns built around log home restoration demand",
+  "Ad messaging written for staining, chinking, blasting, and repair buyers",
+  "Creative direction based on real log-home project visuals",
+  "Exclusive inbound opportunities sent directly to your company",
+  "Lead-quality optimization instead of cheap lead volume",
+  "Clear communication and reporting without agency jargon",
+];
+
+const whyItWorks = [
+  {
+    title: "Hyper-specific messaging",
+    body: "If the ad does not immediately read as log home restoration, the right homeowners scroll past it.",
+  },
+  {
+    title: "Better-fit homeowners",
+    body: "The offer attracts owners looking for specialized preservation and restoration work, not generic repainting.",
+  },
+  {
+    title: "Premium project focus",
+    body: "The system is built to support higher-value restoration opportunities, not random low-intent volume.",
+  },
+  {
+    title: "Simple operator flow",
+    body: "You respond, qualify, and close. We manage the acquisition side and sharpen it over time.",
+  },
+];
+
+const proofStats = [
+  { value: "Exclusive", label: "inquiries routed to one company, not shared" },
+  { value: "Qualified", label: "homeowners asking about restoration-specific scopes" },
+  { value: "Direct", label: "calls and forms sent straight to your team" },
+  { value: "Premium", label: "project types aligned with staining, repair, and preservation work" },
+];
 
 const testimonials = [
   {
-    quote: "They finished in one day and left the house spotless. The entire process felt effortless.",
-    name: "Sarah M.",
-    detail: "Hamilton homeowner",
+    quote:
+      '"The message sounded like it came from somebody who actually understands log home restoration. That showed up in the quality of the calls."',
+    name: "Owner",
+    company: "Mountain West log home restoration company",
   },
   {
-    quote: "The financing was seamless, and seeing the samples in our own light made the decision easy.",
-    name: "Jason and Kelli R.",
-    detail: "Stevensville remodel",
+    quote:
+      '"We were too referral-dependent. This gave us a cleaner way to bring in staining, blasting, and repair projects that fit our business."',
+    name: "Operator",
+    company: "Regional log home staining and blasting company",
   },
   {
-    quote: "Professional from estimate to install. We never felt pressured, and the floors look incredible.",
-    name: "Monica T.",
-    detail: "Florence customer",
+    quote:
+      '"The inquiries felt qualified from the start. People were asking for specialty work, not treating us like a generic paint crew."',
+    name: "Founder",
+    company: "Preservation-focused log home contractor",
   },
 ];
 
-const steps = [
+const proofExamples = [
   {
-    number: "01",
-    title: "Visit the Showroom",
-    description: "Walk the displays, compare materials side by side, and get expert help from the start.",
+    title: "Booked estimate example",
+    detail:
+      "Homeowner requested blasting, failed-chink repair, and full exterior staining for a large weathered log residence.",
+    meta: "Mountain market example",
   },
   {
-    number: "02",
-    title: "Choose the Right Floor",
-    description: "Review hardwood, LVP, tile, and pet-friendly options with guidance tailored to your home and budget.",
+    title: "Territory fit example",
+    detail:
+      "Service-area targeting adapted around rural drive times, second-home density, and high-value log home pockets.",
+    meta: "Rural service area example",
   },
   {
-    number: "03",
-    title: "Enjoy Flawless Installation",
-    description: "Our experienced installers handle the details so your finished space looks clean, polished, and built to last.",
+    title: "Qualified inquiry example",
+    detail:
+      "Homeowner submitted property photos, square footage, and timing window before the estimate call was even booked.",
+    meta: "Estimate-ready inquiry",
   },
+];
+
+const processSteps = [
+  {
+    title: "Book a fit call",
+    body: "We review your company, service mix, and whether the niche fit is strong enough to move forward.",
+  },
+  {
+    title: "Assess the market",
+    body: "We evaluate your service area, premium offer positioning, and response capacity.",
+  },
+  {
+    title: "Build the system",
+    body: "Campaigns, messaging, creative direction, and routing are built around real log home demand.",
+  },
+  {
+    title: "Launch and optimize",
+    body: "Leads come directly to you while we improve quality based on inquiry and close feedback.",
+  },
+];
+
+const bestFitBullets = [
+  "You already do real log home restoration work",
+  "You want more consistent premium opportunities",
+  "You want a system instead of random lead sources",
+  "You can respond to new leads quickly",
+  "You care about fit and project quality more than cheap volume",
 ];
 
 const faqs = [
   {
-    question: "Do I need to move my furniture?",
+    question: "How is this different from generic contractor marketing?",
     answer:
-      "We help coordinate the prep process and handle the heavy lifting details so the project feels simple, not overwhelming.",
+      "Most contractor marketing is too broad for this niche. This is built around log home restoration demand, including the service language, homeowner concerns, and premium positioning that actually matter here.",
   },
   {
-    question: "How long does installation take?",
+    question: "Are the leads exclusive?",
     answer:
-      "Most projects move quickly once materials are selected. Your estimate includes a realistic timeline based on room size and product type.",
+      "Yes. The offer is positioned around exclusive inbound opportunities generated for your company. This is not a shared-lead model.",
   },
   {
-    question: "What is included in your lifetime warranty?",
+    question: "What kinds of services does this work best for?",
     answer:
-      "Our team walks you through product and installation coverage clearly so you know exactly what is protected before the job starts.",
+      "It works best for real log home restoration services such as staining, refinishing, blasting and prep, chinking, repair, preservation work, and larger restoration scopes.",
   },
   {
-    question: "Are your floors pet-friendly?",
+    question: "Do I need to provide content?",
     answer:
-      "Yes. We offer waterproof and scratch-resistant options designed for pets, kids, and high-traffic homes.",
+      "Some input helps, especially strong project photos. We handle the positioning and campaign buildout, but better field visuals usually improve results.",
   },
   {
-    question: "How exact is the free estimate?",
+    question: "What markets does this work in?",
     answer:
-      "We provide precise measurements and transparent pricing so you know exactly what to expect before installation starts.",
+      "Fit depends on your service area, competition, homeowner demand, and whether your company is positioned for premium work. The fit call is where we evaluate that.",
+  },
+  {
+    question: "How quickly can this launch?",
+    answer:
+      "That depends on readiness, service-area clarity, and available assets. Once the fit is clear, the process is built to move quickly.",
+  },
+  {
+    question: "What determines whether we're a fit?",
+    answer:
+      "The main factors are whether you do legitimate log home restoration work, whether you can respond quickly to inbound demand, whether your market is viable, and whether you want qualified premium opportunities rather than cheap volume.",
   },
 ];
 
-function Icon({ type }) {
-  const icons = {
-    DIAMOND: (
-      <path
-        d="M12 3 4 11l8 10 8-10-8-8Zm0 0 4 8H8l4-8Zm-4 8h8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-    PHONE: (
-      <path
-        d="M9 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm3 15h.01M10 6h4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-    BADGE: (
-      <path
-        d="M12 3 5 6v5c0 4.5 3 8.2 7 10 4-1.8 7-5.5 7-10V6l-7-3Zm-2.5 8 1.7 1.7L14.8 9"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-    PAW: (
-      <path
-        d="M8.5 9.5c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2ZM6.5 15c0-2.1 2.5-3.8 5.5-3.8s5.5 1.7 5.5 3.8c0 1.7-1.2 3-3 3H9.5c-1.8 0-3-1.3-3-3Zm-.3-7.2c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8Zm11.6 0c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-  };
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
-      {icons[type]}
-    </svg>
-  );
-}
-
 function App() {
-  const [openFaq, setOpenFaq] = useState(0);
+  const featuredPain = painCards.find((item) => item.featured);
+  const secondaryPainCards = painCards.filter((item) => !item.featured);
+  const primaryBookingHref = ctaConfig.primaryBookingUrl;
+  const secondaryCtaHref = ctaConfig.secondaryCtaUrl;
 
   return (
-    <main className="bg-[var(--ink)] text-white">
-      <section className="hero-shell">
-        <div className="hero-overlay" />
-        <div className="mx-auto grid min-h-screen max-w-7xl items-center gap-12 px-5 py-10 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-12">
-          <div className="relative z-10 max-w-2xl">
-            <img
-              src={logoImage}
-              alt="Bitterroot Floors and More logo"
-              className="hero-logo"
-            />
-            <p className="eyebrow">Visit Our Showroom</p>
-            <h1 className="mt-5 max-w-3xl text-5xl font-[800] leading-[0.95] tracking-[-0.04em] sm:text-6xl lg:text-7xl">
-              Find the Perfect Floors in a Showroom Built to Make Choosing Easy.
-            </h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-white/82 sm:text-lg">
-              Visit Bitterroot Floors & More to explore premium flooring in person, compare styles side
-              by side, and get expert guidance from a local team that knows how to match the right floor
-              to your home.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <a href="#final-cta" className="primary-button">
-                Plan Your Showroom Visit
-              </a>
-              <a href="#offer" className="secondary-button">
-                View 0% Financing
-              </a>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {trustBadges.map((badge) => (
-                <span key={badge} className="pill">
-                  {badge}
-                </span>
-              ))}
-            </div>
-          </div>
+    <div className="overflow-x-clip bg-[var(--bg)] text-[var(--text)] selection:bg-[var(--accent)]/30 selection:text-white">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[var(--accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--bg)]"
+      >
+        Skip to content
+      </a>
 
-          <div className="relative z-10">
-            <div className="hero-card">
-              <div className="room-preview">
-                <div className="room-window" />
-                <div className="room-panel room-panel-left" />
-                <div className="room-panel room-panel-right" />
-                <div className="room-floor" />
-                <div className="room-rug" />
-                <div className="room-sofa" />
-                <div className="room-table" />
-              </div>
-              <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                <div className="metric-card">
-                  <span className="metric-value">30+</span>
-                  <span className="metric-label">Years serving the valley</span>
-                </div>
-                <div className="metric-card">
-                  <span className="metric-value">Huge</span>
-                  <span className="metric-label">Showroom selection to compare in person</span>
-                </div>
-                <div className="metric-card">
-                  <span className="metric-value">A+</span>
-                  <span className="metric-label">Trusted service reputation</span>
-                </div>
-              </div>
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[rgba(8,12,16,0.88)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
+          <a href="#hero" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/6 text-sm font-semibold tracking-[0.22em] text-[var(--accent)]">
+              LH
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-dark">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-12">
-          <div className="problem-visual">
-            <img
-              src={warehouseImage}
-              alt="Overwhelming flooring warehouse aisle"
-              className="problem-image"
-            />
-            <div className="shopper-card">
-              <span className="text-sm uppercase tracking-[0.24em] text-white/60">The old way</span>
-              <p className="mt-3 text-2xl font-[800] leading-tight">Aisles, confusion, and guesswork.</p>
-            </div>
-          </div>
-          <div>
-            <p className="section-tag">Discover a Better Way</p>
-            <h2 className="section-heading mt-4">Tired of Wasting Weekends in Overwhelming Warehouses?</h2>
-            <p className="section-copy mt-5">
-              Buying new floors should not mean endless trips to confusing big-box stores, hidden
-              installation fees, or trying to guess how a tiny sample will look in your unique lighting.
-            </p>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/70">
-              Bitterroot gives you a better showroom experience: expert help, curated options, and a local
-              team that makes decisions feel straightforward instead of stressful.
-            </p>
-            <div className="mt-8 grid gap-3">
-              {painPoints.map((point) => (
-                <div key={point} className="list-card">
-                  <span className="list-bullet" />
-                  <span>{point}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-light">
-        <div className="mx-auto max-w-6xl px-5 py-20 text-center sm:px-8 lg:px-12">
-          <p className="section-tag">Come See It in Person</p>
-          <h2 className="section-heading-dark mt-4">A Showroom Experience That Actually Helps You Decide.</h2>
-          <p className="section-copy-dark mx-auto mt-5 max-w-3xl">
-            Step into a curated showroom where you can compare premium samples, ask questions, and get
-            practical design guidance without pressure. It is the easiest way to feel confident before you buy.
-          </p>
-          <div className="consultation-showcase mx-auto mt-10">
-            <div className="sample-scene">
-              <div className="sample-person" />
-              <div className="sample-board sample-board-a" />
-              <div className="sample-board sample-board-b" />
-              <div className="sample-board sample-board-c" />
-            </div>
-          </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <span className="pill-dark">Licensed</span>
-            <span className="pill-dark">Bonded</span>
-            <span className="pill-dark">Insured</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-light border-t border-black/6">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-12">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="section-tag">Explore Our Catalog</p>
-              <h2 className="section-heading-dark mt-4">Everything You Need for a Flawless Floor.</h2>
-              <p className="section-copy-dark mt-5 max-w-2xl">
-                From first walk-through to final install, Bitterroot helps you compare smarter and buy with confidence.
+              <p className="text-sm font-semibold text-white">
+                Log Home Lead Engine™
+              </p>
+              <p className="text-xs text-[var(--muted)]">by UpScale Media</p>
+              <p className="text-[11px] text-white/68">
+                Built for log home restoration contractors
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              {categories.map((category) => (
-                <span key={category} className="category-chip">
-                  {category}
-                </span>
-              ))}
-            </div>
-          </div>
+          </a>
 
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {features.map((feature) => (
-              <article key={feature.title} className="feature-card">
-                <div className="feature-icon">
-                  <Icon type={feature.icon} />
-                </div>
-                <h3 className="mt-5 text-xl font-[800] text-[var(--ink)]">{feature.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{feature.description}</p>
-              </article>
+          <nav
+            aria-label="Primary"
+            className="hidden items-center gap-8 text-sm text-[var(--muted)] md:flex"
+          >
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="transition hover:text-white"
+              >
+                {item.label}
+              </a>
             ))}
-          </div>
+          </nav>
+
+          <CtaLink
+            href={primaryBookingHref}
+            className="hidden sm:inline-flex"
+          >
+            Book a Fit Call
+          </CtaLink>
         </div>
-      </section>
+      </header>
 
-      <section className="section-cream">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-12">
-          <div className="before-after-card">
-            <img
-              src={beforeAfterImage}
-              alt="Before and after flooring transformation"
-              className="before-after-image"
-            />
-          </div>
-          <div className="flex flex-col justify-center">
-            <p className="section-tag">See Real Transformations</p>
-            <h2 className="section-heading-dark mt-4">Fall in Love with Your Home All Over Again.</h2>
-            <p className="section-copy-dark mt-5">
-              The right flooring changes how your whole home feels. Visit the showroom, see the materials
-              up close, and choose a look that adds value, simplifies upkeep, and makes every room feel finished.
-            </p>
-            <div className="mt-8 grid gap-3 text-sm text-slate-700">
-              <div className="benefit-row">Increase home value with premium, modern materials</div>
-              <div className="benefit-row">Choose easier-clean surfaces for busy daily life</div>
-              <div className="benefit-row">Create a polished look that wows guests instantly</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-light">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <p className="section-tag">Read More Reviews</p>
-            <h2 className="section-heading-dark mt-4">Loved by Over 5,000 Local Homeowners.</h2>
-            <p className="section-copy-dark mt-5">
-              Do not just take our word for it. See why your neighbors rate Bitterroot 5 stars for
-              speed, professionalism, and clean installs.
-            </p>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <span className="category-chip">Angi Super Service Award</span>
-            <span className="category-chip">BBB A+ Rating</span>
-            <span className="category-chip">Google 5-Star Logo</span>
-          </div>
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-[1.1fr_0.9fr_1fr]">
-            <div className="photo-tile photo-tile-a">
-              <img
-                src={beforeAfterImage}
-                alt="Floor transformation detail"
-                className="photo-tile-image"
-              />
-            </div>
-            <article className="testimonial-card testimonial-highlight">
-              <div className="star-row">5.0 / 5</div>
-              <p className="mt-4 text-2xl font-[800] leading-tight text-[var(--ink)]">
-                &quot;Professional from estimate to install. We never felt pressured.&quot;
+      <main id="main-content" className="overflow-x-clip">
+        {/* Hero */}
+        <section
+          id="hero"
+          className="relative overflow-hidden border-b border-white/8"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,111,58,0.18),transparent_20%),linear-gradient(180deg,#11171d_0%,#090d11_54%,#12181e_100%)]" />
+          <div className="wood-grain absolute inset-x-0 top-0 h-56 opacity-45" />
+          <div className="mx-auto grid max-w-7xl gap-14 px-5 py-[4.5rem] sm:px-6 sm:py-24 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:py-[7.5rem]">
+            <div className="relative z-10 lg:pr-6">
+              <p className="eyebrow">Log Home Lead Engine™</p>
+              <p className="mt-3 text-sm font-medium text-white/72">
+                by UpScale Media
               </p>
-              <p className="mt-6 text-sm uppercase tracking-[0.2em] text-slate-500">Real customer project</p>
-            </article>
-            <div className="grid gap-5">
-              {testimonials.slice(0, 2).map((testimonial) => (
-                <article key={testimonial.name} className="testimonial-card">
-                  <div className="star-row">5.0 / 5</div>
-                  <p className="mt-4 text-base leading-7 text-slate-700">&quot;{testimonial.quote}&quot;</p>
-                  <p className="mt-5 text-sm font-[800] text-[var(--ink)]">{testimonial.name}</p>
-                  <p className="text-sm text-slate-500">{testimonial.detail}</p>
-                </article>
-              ))}
+              <h1 className="hero-title mt-7 max-w-[11ch] text-white">
+                Get More Premium
+                <br />
+                Log Home Restoration
+                <br />
+                Projects
+              </h1>
+              <p className="hero-copy mt-7 max-w-2xl">
+                A niche-specific lead generation system built for serious log
+                home restoration contractors who want exclusive inbound
+                opportunities from homeowners already looking for staining,
+                chinking, blasting, repair, and full-scope restoration work.
+              </p>
+
+              <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+                <CtaLink
+                  href={primaryBookingHref}
+                  className="button-primary-hero"
+                >
+                  Book a Fit Call
+                </CtaLink>
+                <CtaLink href={secondaryCtaHref} variant="secondary">
+                  View Proof
+                </CtaLink>
+              </div>
+
+              <p className="mt-5 text-sm font-medium text-white/88">
+                Short fit call. We review your market, service area, and offer
+                fit.
+              </p>
+
+              <p className="mt-5 text-sm font-medium text-white/82">
+                Built specifically for log home restoration contractors. Not
+                generic contractor marketing. Not for handymen. Not for
+                low-bid painters.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                {[
+                  "Log home restoration",
+                  "Staining and refinishing",
+                  "Chinking and sealing",
+                  "Blasting and prep",
+                ].map((tag) => (
+                  <span key={tag} className="chip-dark">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative z-10">
+              <div className="panel-dark hero-proof-shell">
+                <div className="surface-photo hero-proof-main min-h-[21rem] rounded-[1.9rem] p-6 sm:p-7">
+                  <div className="flex h-full flex-col justify-between">
+                    <div className="max-w-md">
+                      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--accent-soft)]">
+                        Results panel
+                      </p>
+                      <h2 className="mt-4 text-[1.9rem] font-semibold leading-tight tracking-[-0.04em] text-white">
+                        Demand built around real restoration work, not generic
+                        contractor traffic
+                      </h2>
+                      <p className="mt-4 text-base leading-7 text-white/82">
+                        Territory-based lead flow for companies quoting
+                        high-ticket log home staining, chinking, blasting, and
+                        preservation projects.
+                      </p>
+                    </div>
+
+                    <div className="mt-10 space-y-4">
+                      {[
+                        "Latest inbound lead: 4,800 sq. ft. log home requesting blasting, repair, and exterior stain.",
+                        "Booked call signal: homeowner submitted photos, timing, and service need before the estimate call.",
+                      ].map((item) => (
+                        <div key={item} className="proof-feed-row proof-feed-row-hero">
+                          <span className="feed-dot" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 proof-card">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-base font-semibold text-white">
+                        Active demand snapshot
+                      </p>
+                    </div>
+                    <span className="proof-pill">Exclusive lead flow</span>
+                  </div>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    {proofStats.slice(0, 2).map((stat) => (
+                      <div key={stat.label} className="proof-card proof-stat-dark">
+                        <p className="text-4xl font-semibold tracking-[-0.05em] text-white">
+                          {stat.value}
+                        </p>
+                        <p className="mt-2 text-sm leading-6 text-white/82">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  id="fit-call"
+                  className="mt-5 grid gap-4 rounded-[1.9rem] border border-white/10 bg-[rgba(4,7,10,0.28)] p-6"
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--accent-soft)]">
+                        GoHighLevel Integration
+                      </p>
+                      <p className="mt-3 text-lg font-medium text-white">
+                        The next step is a short fit call to review market,
+                        service area, and response fit. Set your GoHighLevel
+                        calendar or form URL in the CTA config to make this live.
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/70">
+                      GHL-ready section
+                    </span>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="input-shell">
+                      Primary booking URL
+                      <span className="mt-1 block text-sm text-white/72">
+                        {ctaConfig.primaryBookingUrl}
+                      </span>
+                    </div>
+                    <div className="input-shell">
+                      Thank-you page URL
+                      <span className="mt-1 block text-sm text-white/72">
+                        {ctaConfig.thankYouPageUrl}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    <CtaLink
+                      href={primaryBookingHref}
+                      className="w-full sm:w-auto"
+                    >
+                      Book a Fit Call
+                    </CtaLink>
+                    {hasGhlCalendar ? (
+                      <CtaLink href={ctaConfig.ghlCalendarUrl} variant="secondary">
+                        Open GHL Calendar
+                      </CtaLink>
+                    ) : null}
+                    {hasGhlForm ? (
+                      <CtaLink href={ctaConfig.ghlFormUrl} variant="secondary">
+                        Open GHL Form
+                      </CtaLink>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-white/72">
+                    {hasExternalBookingUrl
+                      ? "Primary CTAs now link to your configured booking destination."
+                      : "Primary CTAs currently scroll to this section until a production booking URL is added."}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section-dark-soft">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <p className="section-tag">Start Step 1 Today</p>
-            <h2 className="section-heading mt-4">Your Dream Floors in 3 Simple Steps.</h2>
-            <p className="section-copy mt-5">
-              We have built the process to be simple: see the options, choose the right one, then let our team handle the install.
-            </p>
-          </div>
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {steps.map((step) => (
-              <article key={step.number} className="step-card">
-                <span className="step-number">{step.number}</span>
-                <h3 className="mt-5 text-2xl font-[800] text-white">{step.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-white/72">{step.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="offer" className="offer-section">
-        <div className="mx-auto max-w-5xl px-5 py-20 sm:px-8 lg:px-12">
-          <div className="offer-card">
-            <div>
-              <p className="section-tag">Get Pre-Approved for 0% Financing</p>
-              <h2 className="mt-4 max-w-2xl text-4xl font-[800] leading-tight tracking-[-0.03em] text-[var(--ink)] sm:text-5xl">
-                Premium Floors. Zero Percent Stress.
+        {/* For / Not For */}
+        <section className="section-shell" aria-labelledby="for-not-for-title">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <p className="section-kicker">Qualification</p>
+              <h2
+                id="for-not-for-title"
+                className="section-title title-on-dark mt-5"
+              >
+                Built for a Very Specific Type of Company
               </h2>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-700">
-                Visit the showroom, choose the floors you want, and spread the cost over time with our exclusive promotional financing.
+            </div>
+
+            <div className="mt-12 grid gap-7 lg:grid-cols-2">
+              <div className="panel-dark fit-card fit-card-positive">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[var(--accent-soft)]">
+                  This is for
+                </p>
+                <div className="mt-7 space-y-4">
+                  {fitItems.map((item) => (
+                    <div key={item} className="list-row list-row-strong">
+                      <span className="list-icon list-icon-positive">+</span>
+                      <span className="text-base font-medium text-white">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="panel-dark fit-card fit-card-negative">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/78">
+                  This is not for
+                </p>
+                <div className="mt-7 space-y-4">
+                  {notFitItems.map((item) => (
+                    <div key={item} className="list-row list-row-muted">
+                      <span className="list-icon list-icon-negative">-</span>
+                      <span className="text-base font-medium text-white">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Problem */}
+        <section className="border-y border-white/8 bg-[var(--bg-soft)] py-24 sm:py-[7.5rem]">
+          <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-6 lg:grid-cols-[0.98fr_1.02fr] lg:px-8">
+            <div className="max-w-md">
+              <p className="section-kicker">The Problem</p>
+              <h2 className="section-title title-on-dark mt-5">
+                Most Good Companies in This Space Still Rely Too Heavily on
+                Referrals
+              </h2>
+              <div className="problem-copy mt-6 max-w-sm space-y-4 text-[1.02rem] leading-8 text-[var(--muted)]">
+                <p>
+                  You may do excellent work, but inconsistent inbound demand
+                  creates schedule gaps, slows growth, and makes it harder to
+                  stay focused on premium restoration projects.
+                </p>
+                <p>
+                  Most contractor marketing is too broad to work here. Log home
+                  owners need a different message, and companies in this niche
+                  need a system built around that reality.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid items-stretch gap-5 lg:grid-cols-[1.12fr_0.88fr]">
+              <article className="panel-dark problem-featured-card min-h-[18rem]">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent-soft)]">
+                  Core constraint
+                </p>
+                <p className="mt-5 max-w-md text-[2rem] font-semibold leading-tight tracking-[-0.04em] text-white">
+                  {featuredPain?.title}
+                </p>
+                <p className="mt-5 max-w-md text-base leading-7 text-[var(--muted)]">
+                  {featuredPain?.body}
+                </p>
+              </article>
+
+              <div className="grid gap-4 content-start">
+                {secondaryPainCards.map((item) => (
+                  <article
+                    key={item.title}
+                    className="panel-dark pain-card-secondary problem-side-card"
+                  >
+                    <p className="text-[1.08rem] font-semibold leading-7 text-white">
+                      {item.title}
+                    </p>
+                    <p className="mt-3 max-w-sm text-[0.98rem] leading-7 text-[var(--muted)]">
+                      {item.body}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Offer / Solution */}
+        <section id="why-usm" className="section-shell section-light">
+          <div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+            <div>
+              <p className="section-kicker section-kicker-light">The Offer</p>
+              <h2 className="section-title mt-5">
+                A Lead Generation System Built Specifically for This Niche
+              </h2>
+              <p className="mt-7 max-w-xl text-[1.08rem] leading-8 text-[var(--muted-dark)]">
+                We build and manage a paid acquisition system designed to bring
+                in exclusive opportunities from log home owners looking for real
+                restoration work.
+              </p>
+
+              <div className="support-panel mt-9">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[var(--accent-deep)]">
+                  What the system handles
+                </p>
+                <p className="mt-4 text-base leading-7 text-[var(--muted-dark)]">
+                  Strategy, offer framing, campaign setup, creative direction,
+                  lead routing, and ongoing optimization around lead quality.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {offerItems.map((item) => (
+                <article key={item} className="panel-light feature-card-strong">
+                  <div className="icon-chip" aria-hidden="true">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
+                  </div>
+                  <p className="mt-5 text-lg font-semibold leading-7 text-[var(--text-strong)]">
+                    {item}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Why This Works */}
+        <section className="border-y border-white/8 bg-[var(--bg-soft)] py-[7rem] sm:py-[8.75rem]">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <p className="section-kicker">Why This Works</p>
+              <h2 className="section-title title-on-dark mt-5">
+                Why This Works Better Than Generic Contractor Marketing
+              </h2>
+            </div>
+
+            <div className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {whyItWorks.map((item) => (
+                <article key={item.title} className="panel-dark why-card">
+                  <p className="text-[1.35rem] font-semibold leading-tight text-white">
+                    {item.title}
+                  </p>
+                  <p className="mt-4 max-w-sm text-[0.98rem] leading-7 text-[var(--muted)]">
+                    {item.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Proof */}
+        <section id="proof" className="section-shell section-light">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <p className="section-kicker section-kicker-light">Proof</p>
+              <h2 className="section-title mt-5">
+                Proof of Demand Already Exists
+              </h2>
+              <p className="mt-7 max-w-2xl text-[1.08rem] leading-8 text-[var(--muted-dark)]">
+                This section is built to show the kind of proof that matters in
+                this niche: lead quality, estimate readiness, and project fit.
               </p>
             </div>
-            <div className="offer-grid mt-10">
-              <div className="offer-stat">
-                <span className="offer-big">0%</span>
-                <span className="offer-small">Interest for 36 Months</span>
+
+            <div className="mt-14 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="proof-editorial">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="max-w-xl">
+                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[var(--accent-deep)]">
+                      Flagship proof panel
+                    </p>
+                    <h3 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[var(--text-strong)]">
+                      Proof should show lead quality, estimate readiness, and
+                      project fit, not generic lead volume.
+                    </h3>
+                  </div>
+                  <span className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-xs text-[var(--muted-dark)]">
+                    Replace with real case data
+                  </span>
+                </div>
+
+                <div className="mt-10 grid gap-4 sm:grid-cols-2">
+                  {proofStats.map((stat) => (
+                    <div key={stat.label} className="proof-stat-light">
+                      <p className="text-5xl font-semibold tracking-[-0.06em] text-[var(--text-strong)]">
+                        {stat.value}
+                      </p>
+                      <p className="mt-3 text-sm font-medium uppercase tracking-[0.08em] text-[var(--muted-dark)]">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-10 space-y-4">
+                  {proofExamples.map((example) => (
+                    <article key={example.title} className="proof-example-row">
+                      <div className="proof-example-copy">
+                        <p className="text-lg font-semibold text-[var(--text-strong)]">
+                          {example.title}
+                        </p>
+                        <p className="mt-3 text-base leading-7 text-[var(--muted-dark)]">
+                          {example.detail}
+                        </p>
+                      </div>
+                      <span className="proof-example-tag">{example.meta}</span>
+                    </article>
+                  ))}
+                </div>
               </div>
-              <div className="offer-callout">
-                <span className="category-chip">Price Match Guarantee</span>
-                <span className="category-chip">No Hidden Installation Fees</span>
-                <p className="mt-4 text-sm text-slate-500">Subject to credit approval.</p>
+
+              <div className="space-y-5">
+                {testimonials.map((item) => (
+                  <blockquote key={item.quote} className="panel-light proof-support-card">
+                    <p className="text-xl leading-8 text-[var(--text-strong)]">
+                      {item.quote}
+                    </p>
+                    <footer className="mt-7">
+                      <p className="font-semibold text-[var(--text-strong)]">
+                        {item.name}
+                      </p>
+                      <p className="mt-1 text-sm text-[var(--muted-dark)]">
+                        {item.company}
+                      </p>
+                    </footer>
+                  </blockquote>
+                ))}
               </div>
             </div>
-            <a href="#final-cta" className="primary-button mt-10 inline-flex">
-              Get Pre-Approved for 0% Financing
-            </a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section-light border-t border-black/6">
-        <div className="mx-auto max-w-5xl px-5 py-20 sm:px-8 lg:px-12">
-          <div className="text-center">
-            <p className="section-tag">Common Questions from Homeowners</p>
-            <h2 className="section-heading-dark mt-4">Everything You Need to Know About the Process.</h2>
-            <p className="section-copy-dark mx-auto mt-5 max-w-2xl">
-              Clear answers right before the final step so you can move forward with confidence.
+        {/* How It Works */}
+        <section id="how-it-works" className="section-shell section-tight">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <p className="section-kicker">How It Works</p>
+              <h2 className="section-title title-on-dark mt-5">
+                How It Works
+              </h2>
+            </div>
+
+            <div className="process-grid mt-14 grid gap-6 xl:grid-cols-4">
+              {processSteps.map((step, index) => (
+                <article key={step.title} className="panel-dark process-card">
+                  <span className="step-badge">0{index + 1}</span>
+                  <p className="mt-6 text-xl font-semibold leading-tight text-white">
+                    {step.title}
+                  </p>
+                  <p className="mt-4 text-base leading-7 text-[var(--muted)]">
+                    {step.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Best Fit */}
+        <section className="section-compact border-y border-white/8 bg-[var(--bg-soft)]">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+            <div className="grid items-start gap-10 lg:grid-cols-[0.88fr_1.12fr]">
+              <div className="max-w-xl">
+                <p className="section-kicker">Best Fit</p>
+                <h2 className="section-title title-on-dark mt-5">Best Fit</h2>
+                <p className="mt-7 text-[1.08rem] leading-8 text-[var(--muted)]">
+                  This works best for operators already doing legitimate log
+                  home restoration work who want a clearer, more dependable path
+                  to premium project opportunities.
+                </p>
+              </div>
+
+              <div className="panel-dark checklist-shell">
+                <div className="space-y-4">
+                  {bestFitBullets.map((item) => (
+                    <div key={item} className="list-row list-row-strong">
+                      <span className="list-icon list-icon-positive">+</span>
+                      <span className="text-base font-medium text-white">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section id="faq" className="section-shell section-light faq-section">
+          <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <p className="section-kicker section-kicker-light">FAQ</p>
+              <h2 className="section-title mt-5">Frequently Asked Questions</h2>
+            </div>
+
+            <div className="faq-stack mt-10 space-y-4">
+              {faqs.map((item) => (
+                <details key={item.question} className="faq-shell group">
+                  <summary className="faq-summary">
+                    <span>{item.question}</span>
+                    <span
+                      aria-hidden="true"
+                      className="faq-mark transition group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-5 pr-8 text-base leading-8 text-[var(--muted-dark)]">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="section-shell final-cta-section border-t border-white/8">
+          <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+            <div className="panel-dark final-cta-shell text-center">
+              <p className="section-kicker">Next Step</p>
+              <h2 className="section-title title-on-dark mx-auto mt-5 max-w-[13ch]">
+                See If This Is a Fit for Your Company
+              </h2>
+              <p className="mx-auto mt-6 max-w-2xl text-[1.08rem] leading-8 text-[var(--muted)]">
+                If you run a serious log home restoration company and want more
+                premium project opportunities, the next step is a fit call.
+              </p>
+              <div className="mt-10">
+                <CtaLink
+                  href={primaryBookingHref}
+                  className="button-primary-hero"
+                >
+                  Book a Fit Call
+                </CtaLink>
+                <p className="mt-4 text-sm text-white/90">
+                  Short fit call to review your market, service area, and offer
+                  fit.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer className="border-t border-white/8 bg-[rgba(7,10,13,0.8)]">
+          <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 text-sm sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+            <div>
+              <p className="text-base font-semibold text-white">
+                Log Home Lead Engine™
+              </p>
+              <p className="mt-1 text-[var(--muted)]">by UpScale Media</p>
+            </div>
+            <p className="max-w-xl text-white/72">
+              Built by UpScale Media for premium log home restoration
+              contractors.
             </p>
           </div>
+        </footer>
+      </main>
 
-          <div className="mt-10 space-y-4">
-            {faqs.map((faq, index) => {
-              const isOpen = openFaq === index;
-
-              return (
-                <article key={faq.question} className="faq-card">
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaq(isOpen ? -1 : index)}
-                    className="faq-button"
-                  >
-                    <span>{faq.question}</span>
-                    <span className="faq-symbol">{isOpen ? "-" : "+"}</span>
-                  </button>
-                  {isOpen ? <p className="faq-answer">{faq.answer}</p> : null}
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section id="final-cta" className="final-cta">
-        <div className="mx-auto max-w-4xl px-5 py-20 text-center sm:px-8 lg:px-12">
-          <p className="section-tag text-white/72">Claim My Free Estimate Now</p>
-          <h2 className="mt-4 text-4xl font-[800] leading-tight tracking-[-0.03em] text-white sm:text-5xl">
-            Ready to Visit the Showroom?
-          </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-white/78">
-            Plan your showroom visit, explore the best options in person, and take the next step toward
-            new floors with expert help and no pressure.
+      <div className="mobile-cta sm:hidden">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-soft)]">
+            Log Home Lead Engine™
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <input
-              type="text"
-              placeholder="Enter your phone or email"
-              className="cta-input"
-            />
-            <a href="https://example.com/free-estimate" className="primary-button">
-              Plan My Showroom Visit
-            </a>
-          </div>
-          <div className="mt-6 flex items-center justify-center gap-4 text-sm text-white/68">
-            <span>100% Satisfaction Guarantee</span>
-            <span className="h-1 w-1 rounded-full bg-white/50" />
-            <span>Secure request form</span>
-          </div>
+          <p className="text-sm font-medium text-white">Book a fit call</p>
         </div>
-      </section>
-    </main>
+        <CtaLink
+          href={primaryBookingHref}
+          className="px-5 py-3 text-sm"
+        >
+          Book a Fit Call
+        </CtaLink>
+      </div>
+    </div>
   );
 }
 
